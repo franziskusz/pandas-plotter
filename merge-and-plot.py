@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import sys
 
 tolerance = 0
@@ -32,13 +33,10 @@ def unify_views(godot_df, process_df):
 
     godot_new = godot_df.set_index(godot_seconds_index)
     process_new = process_df.set_index(process_seconds_index)
-    print(godot_new)
-    print(process_new)
+    #print(godot_new) #debug
+    #print(process_new) #debug
     unified_views_df=process_new.join(godot_new, how="left")
-    print(unified_views_df)
-
-
-
+    #print(unified_views_df) #debug
 
     #create timestamp in micro seconds series with range from monitor_df
     #create new unified df with series as index
@@ -46,15 +44,9 @@ def unify_views(godot_df, process_df):
     # return new df
     return unified_views_df
 
-def to_int_seconds(value):
-    second = value / 1000000
-    int_second = int(second)
-    return int_second
-
-def plot_unified_views_df(unified_views_df):
-    #plot
-    #save plot
-    pass
+def plot_unified_views_df(unified_views_df, title):
+    unified_views_df.plot(subplots=True, title=title)
+    plt.show()
 
 def unify_languages(unified_views_rust_df, unified_views_gds_df):
     #create new df with seconds column as index
@@ -119,18 +111,34 @@ def main():
     gds_godot_df = pd.read_csv(sys.argv[3], header=[0], index_col=[0], dtype='int64')
     gds_process_df = pd.read_csv(sys.argv[4], header=[0], index_col=[0])
     # some Variables of importance for adjusting the files to each other
-    rust_godot_columns=rust_godot_df.shape[1]
-    rust_godot_rows=rust_godot_df.shape[0]
-    rust_process_columns=rust_process_df.shape[1]
-    rust_process_rows=rust_process_df.shape[0]
-    gds_godot_columns=gds_godot_df.shape[1]
-    gds_godot_rows=gds_godot_df.shape[0]
-    gds_process_columns=gds_process_df.shape[1]
-    gds_process_rows=gds_process_df.shape[0]
 
     print("happy plotting!")
 
-    unified_views = unify_views(rust_godot_df, rust_process_df)
+    unified_rust_views = unify_views(rust_godot_df, rust_process_df)
+    #plot_unified_views_df(unified_rust_views, "rust")
+
+    unified_gds_views = unify_views(gds_godot_df, gds_process_df)
+    #plot_unified_views_df(unified_gds_views, "godot")
+
+    unified_rust_views_filtered = unified_rust_views.dropna(subset=["second"])
+    print(unified_rust_views_filtered)
+    unified_gds_views_filtered = unified_gds_views.dropna(subset=["second"])
+    print(unified_gds_views_filtered)
+
+    rust_seconds = unified_rust_views_filtered["second"]
+    unified_rust_views_by_seconds = unified_rust_views_filtered.set_index(rust_seconds)
+    unified_rust_views_by_seconds.drop(columns="second")
+    print(unified_rust_views_by_seconds)
+
+    gds_seconds = unified_gds_views_filtered["second"]
+    unified_gds_views_by_seconds = unified_gds_views_filtered.set_index(gds_seconds)
+    unified_gds_views_by_seconds.drop(columns="second")
+    print(unified_gds_views_by_seconds)
+
+    diff_df = dataframe_difference(unified_rust_views_by_seconds, unified_gds_views_by_seconds)
+
+    plot_unified_views_df(diff_df, "difference rust - gds")
+
 
 
 
