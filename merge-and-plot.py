@@ -4,7 +4,7 @@ import sys
 
 tolerance = 0
 
-def unify_views(godot_df, monitor_df):
+def unify_views(godot_df, process_df):
     #create timestamp in micro seconds series with range from monitor_df
     #create new unified df with series as index
     #join/merge godot_df and monitor df onto new df
@@ -26,7 +26,7 @@ def calculate_language_difference(unified_languages_df):
     #return some statistics
     pass
 
-def plot unified_languages(unified_languages_df):
+def plot_unified_languages(unified_languages_df):
     #plot
     #save plot
     pass
@@ -74,20 +74,21 @@ def statistics(bool):
 
 def main():
 
-    dodge_rust_df = pd.read_csv(sys.argv[1], header=[0], index_col=[0], dtype='int64')
-    dodge_rust_process_df = pd.read_csv(sys.argv[2], header=[0], index_col=[0], dtype='int64')
-    dodge_gds_df = pd.read_csv(sys.argv[3], header=[0], index_col=[0], dtype='int64')
-    dodge_gds_process_df = pd.read_csv(sys.argv[4], header=[0], index_col=[0], dtype='int64')
+    rust_godot_df = pd.read_csv(sys.argv[1], header=[0], index_col=[0], dtype='int64')
+    rust_process_df = pd.read_csv(sys.argv[2], header=[0], index_col=[0])
+    gds_godot_df = pd.read_csv(sys.argv[3], header=[0], index_col=[0], dtype='int64')
+    gds_process_df = pd.read_csv(sys.argv[4], header=[0], index_col=[0])
     # some Variables of importance for adjusting the files to each other
-    dodge_rust_df=dodge_rust_df.shape[1]
-    dodge_rust_df=dodge_rust_df.shape[0]
-    dodge_rust_process_df=dodge_rust_process_df.shape[1]
-    dodge_rust_process_df=dodge_rust_process_df.shape[0]
-    dodge_gds_df=dodge_gds_df.shape[1]
-    dodge_gds_df=dodge_gds_df.shape[0]
-    dodge_gds_process_df=dodge_gds_process_df.shape[1]
-    dodge_gds_process_df=dodge_gds_process_df.shape[0]
+    rust_godot_columns=rust_godot_df.shape[1]
+    rust_godot_rows=rust_godot_df.shape[0]
+    rust_process_columns=rust_process_df.shape[1]
+    rust_process_rows=rust_process_df.shape[0]
+    gds_godot_columns=gds_godot_df.shape[1]
+    gds_godot_rows=gds_godot_df.shape[0]
+    gds_process_columns=gds_process_df.shape[1]
+    gds_process_rows=gds_process_df.shape[0]
 
+    print("happy plotting!")
 
 
 
