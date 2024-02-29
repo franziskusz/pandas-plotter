@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import os
 
 tolerance = 0
 
@@ -107,39 +108,84 @@ def statistics(bool):
 
 def main():
 
-    rust_godot_df = pd.read_csv(sys.argv[1], header=[0], index_col=[0], dtype='int64')
-    rust_process_df = pd.read_csv(sys.argv[2], header=[0], index_col=[0])
-    gds_godot_df = pd.read_csv(sys.argv[3], header=[0], index_col=[0], dtype='int64')
-    gds_process_df = pd.read_csv(sys.argv[4], header=[0], index_col=[0])
-    # some Variables of importance for adjusting the files to each other
+    rust_godot_dir = sys.argv[1]
+    rust_process_dir = sys.argv[2]
+    gds_godot_dir = sys.argv[3]
+    gds_process_dir = sys.argv[4]
+
+    rust_godot_csv_dict = dict()
+    rust_process_csv_dict = dict()
+    gds_godot_csv_dict = dict()
+    gds_process_csv_dict = dict()
+
+    for file in os.listdir(rust_godot_dir):
+        if file.endswith(".csv"):
+            rust_godot_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(rust_godot_dir, file), header=[0], index_col=[0], dtype='int64')
+
+    for file in os.listdir(rust_process_dir):
+        if file.endswith(".csv"):
+            rust_process_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(rust_process_dir, file), header=[0], index_col=[0])
+
+    for file in os.listdir(gds_godot_dir):
+        if file.endswith(".csv"):
+            gds_godot_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(gds_godot_dir, file), header=[0], index_col=[0], dtype='int64')
+
+    for file in os.listdir(gds_process_dir):
+        if file.endswith(".csv"):
+            gds_process_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(gds_process_dir, file), header=[0], index_col=[0])
+
+    unified_rust_views_seconds_list = []
+    unified_gds_views_seconds_list = []
+    diff_df_list = []
+
+    while True:
+        try:
+            rust_godot_key, rust_godot_df = rust_godot_csv_dict.popitem()
+            rust_process_key, rust_process_df = rust_process_csv_dict.popitem()
+            gds_godot_key, gds_godot_df = gds_godot_csv_dict.popitem()
+            gds_process_key, gds_process_df = gds_process_csv_dict.popitem()
+
+            unified_rust_views = unify_views(rust_godot_df, rust_process_df)
+            unified_gds_views = unify_views(gds_godot_df, gds_process_df)
+
+            unified_rust_views_filtered = unified_rust_views.dropna(subset=["second"])
+            unified_gds_views_filtered = unified_gds_views.dropna(subset=["second"])
+
+            rust_seconds = unified_rust_views_filtered["second"]
+            unified_rust_views_by_seconds = unified_rust_views_filtered.set_index(rust_seconds)
+            unified_rust_views_by_seconds.drop(columns="second")
+            #print(unified_rust_views_by_seconds)
+
+            gds_seconds = unified_gds_views_filtered["second"]
+            unified_gds_views_by_seconds = unified_gds_views_filtered.set_index(gds_seconds)
+            unified_gds_views_by_seconds.drop(columns="second")
+            #print(unified_gds_views_by_seconds)
+
+            diff_df = dataframe_difference(unified_rust_views_by_seconds, unified_gds_views_by_seconds)
+
+            unified_rust_views_seconds_list.append(unified_rust_views_by_seconds)
+            unified_gds_views_seconds_list.append(unified_gds_views_by_seconds)
+
+            diff_df_list.append(diff_df)
+
+
+        except KeyError:
+            print("csv dictionary is empty")
+            break
+
 
     print("happy plotting!")
 
-    unified_rust_views = unify_views(rust_godot_df, rust_process_df)
-    #plot_unified_views_df(unified_rust_views, "rust")
+    average_rust = pd.concat(unified_rust_views_seconds_list).groupby(level=0).mean()
+    average_gds = pd.concat(unified_gds_views_seconds_list).groupby(level=0).mean()
+    average_diff = pd.concat(diff_df_list).groupby(level=0).mean()
+    print(average_rust)
+    print(average_gds)
+    print(average_diff)
 
-    unified_gds_views = unify_views(gds_godot_df, gds_process_df)
-    #plot_unified_views_df(unified_gds_views, "godot")
-
-    unified_rust_views_filtered = unified_rust_views.dropna(subset=["second"])
-    print(unified_rust_views_filtered)
-    unified_gds_views_filtered = unified_gds_views.dropna(subset=["second"])
-    print(unified_gds_views_filtered)
-
-    rust_seconds = unified_rust_views_filtered["second"]
-    unified_rust_views_by_seconds = unified_rust_views_filtered.set_index(rust_seconds)
-    unified_rust_views_by_seconds.drop(columns="second")
-    print(unified_rust_views_by_seconds)
-
-    gds_seconds = unified_gds_views_filtered["second"]
-    unified_gds_views_by_seconds = unified_gds_views_filtered.set_index(gds_seconds)
-    unified_gds_views_by_seconds.drop(columns="second")
-    print(unified_gds_views_by_seconds)
-
-    diff_df = dataframe_difference(unified_rust_views_by_seconds, unified_gds_views_by_seconds)
-
+    plot_unified_views_df(unified_rust_views, "rust")
+    plot_unified_views_df(unified_gds_views, "godot")
     plot_unified_views_df(diff_df, "difference rust - gds")
-
 
 
 
