@@ -108,17 +108,30 @@ def statistics(bool):
 
 
 def main():
-
+    #save paths to folders from script invocation to variables
     rust_godot_dir = sys.argv[1]
     rust_process_dir = sys.argv[2]
     gds_godot_dir = sys.argv[3]
     gds_process_dir = sys.argv[4]
 
+    #unordered dicts to save filename and table with listdir() which collects files in arbitrary order
     rust_godot_csv_dict = dict()
     rust_process_csv_dict = dict()
     gds_godot_csv_dict = dict()
     gds_process_csv_dict = dict()
 
+    #ordered dict because the order matters
+    rust_godot_csv_dict_ordered = OrderedDict()
+    rust_process_csv_dict_ordered = OrderedDict()
+    gds_godot_csv_dict_ordered = OrderedDict()
+    gds_process_csv_dict_ordered = OrderedDict()
+
+    #lists to save the unified dataframes for calculating the average of multiple runs
+    unified_rust_views_seconds_list = []
+    unified_gds_views_seconds_list = []
+    diff_df_list = []
+
+    #iterating through the csv files in the given directories
     for file in os.listdir(rust_godot_dir):
         if file.endswith(".csv"):
             rust_godot_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(rust_godot_dir, file), header=[0], index_col=[0], dtype='int64')
@@ -135,10 +148,7 @@ def main():
         if file.endswith(".csv"):
             gds_process_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(gds_process_dir, file), header=[0], index_col=[0])
 
-    unified_rust_views_seconds_list = []
-    unified_gds_views_seconds_list = []
-    diff_df_list = []
-
+    #sorting by the filenames which should be given some kind of order (timestamp)
     rust_godot_keys = list(rust_godot_csv_dict.keys())
     rust_godot_keys.sort()
     rust_process_keys = list(rust_process_csv_dict.keys())
@@ -148,11 +158,7 @@ def main():
     gds_process_keys = list(gds_process_csv_dict.keys())
     gds_process_keys.sort()
 
-    rust_godot_csv_dict_ordered = OrderedDict()
-    rust_process_csv_dict_ordered = OrderedDict()
-    gds_godot_csv_dict_ordered = OrderedDict()
-    gds_process_csv_dict_ordered = OrderedDict()
-
+    #consuming unordered dicts into the ordered ones
     for key in rust_godot_keys:
         val = rust_godot_csv_dict[key]
         rust_godot_csv_dict_ordered[key] = val
@@ -173,6 +179,7 @@ def main():
         gds_process_csv_dict_ordered[key] = val
         del gds_process_csv_dict[key]
 
+    #debug
     #print(rust_godot_keys)
     #print(rust_process_keys)
     #print(gds_godot_keys)
@@ -183,6 +190,14 @@ def main():
     #print(gds_godot_csv_dict_ordered)
     #print(gds_process_csv_dict_ordered)
 
+    #while True:
+    #    try:
+    #        rust_godot_key, rust_godot_df = rust_godot_csv_dict_ordered.popitem()
+    #    except KeyError:
+    #        print ("dictionary is empty")
+
+    #if ONE dictionary is empty while accessed by popitem() the whole rest of try block will be skipped
+    #so this only works as intended, if the folders contain the same amount of files
     while True:
         try:
             rust_godot_key, rust_godot_df = rust_godot_csv_dict_ordered.popitem()
@@ -229,6 +244,7 @@ def main():
 
     #print(unified_rust_views_seconds_list)
 
+    #calculating the average of the lists
     average_rust = pd.concat(unified_rust_views_seconds_list).groupby(level=0).mean()
     average_gds = pd.concat(unified_gds_views_seconds_list).groupby(level=0).mean()
     average_diff = pd.concat(diff_df_list).groupby(level=0).mean()
@@ -239,6 +255,7 @@ def main():
     print("average diff")
     print(average_diff)
 
+    #plot the averages
     plot_unified_views_df(unified_rust_views, "rust")
     plot_unified_views_df(unified_gds_views, "godot")
     plot_unified_views_df(diff_df, "difference rust - gds")
