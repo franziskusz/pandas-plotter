@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import os
+from collections import OrderedDict
 
 tolerance = 0
 
@@ -138,12 +139,58 @@ def main():
     unified_gds_views_seconds_list = []
     diff_df_list = []
 
+    rust_godot_keys = list(rust_godot_csv_dict.keys())
+    rust_godot_keys.sort()
+    rust_process_keys = list(rust_process_csv_dict.keys())
+    rust_process_keys.sort()
+    gds_godot_keys = list(gds_godot_csv_dict.keys())
+    gds_godot_keys.sort()
+    gds_process_keys = list(gds_process_csv_dict.keys())
+    gds_process_keys.sort()
+
+    rust_godot_csv_dict_ordered = OrderedDict()
+    rust_process_csv_dict_ordered = OrderedDict()
+    gds_godot_csv_dict_ordered = OrderedDict()
+    gds_process_csv_dict_ordered = OrderedDict()
+
+    for key in rust_godot_keys:
+        val = rust_godot_csv_dict[key]
+        rust_godot_csv_dict_ordered[key] = val
+        del rust_godot_csv_dict[key]
+
+    for key in rust_process_keys:
+        val = rust_process_csv_dict[key]
+        rust_process_csv_dict_ordered[key] = val
+        del rust_process_csv_dict[key]
+
+    for key in gds_godot_keys:
+        val = gds_godot_csv_dict[key]
+        gds_godot_csv_dict_ordered[key] = val
+        del gds_godot_csv_dict[key]
+
+    for key in gds_process_keys:
+        val = gds_process_csv_dict[key]
+        gds_process_csv_dict_ordered[key] = val
+        del gds_process_csv_dict[key]
+
+    #print(rust_godot_keys)
+    #print(rust_process_keys)
+    #print(gds_godot_keys)
+    #print(gds_process_keys)
+
+    #print(rust_godot_csv_dict_ordered)
+    #print(rust_process_csv_dict_ordered)
+    #print(gds_godot_csv_dict_ordered)
+    #print(gds_process_csv_dict_ordered)
+
     while True:
         try:
-            rust_godot_key, rust_godot_df = rust_godot_csv_dict.popitem()
-            rust_process_key, rust_process_df = rust_process_csv_dict.popitem()
-            gds_godot_key, gds_godot_df = gds_godot_csv_dict.popitem()
-            gds_process_key, gds_process_df = gds_process_csv_dict.popitem()
+            rust_godot_key, rust_godot_df = rust_godot_csv_dict_ordered.popitem()
+            rust_process_key, rust_process_df = rust_process_csv_dict_ordered.popitem()
+            gds_godot_key, gds_godot_df = gds_godot_csv_dict_ordered.popitem()
+            gds_process_key, gds_process_df = gds_process_csv_dict_ordered.popitem()
+            #print(rust_godot_df)
+            #print(rust_process_df)
 
             unified_rust_views = unify_views(rust_godot_df, rust_process_df)
             unified_gds_views = unify_views(gds_godot_df, gds_process_df)
@@ -154,14 +201,18 @@ def main():
             rust_seconds = unified_rust_views_filtered["second"]
             unified_rust_views_by_seconds = unified_rust_views_filtered.set_index(rust_seconds)
             unified_rust_views_by_seconds.drop(columns="second")
-            #print(unified_rust_views_by_seconds)
+            print("rust unified")
+            print(unified_rust_views_by_seconds)
 
             gds_seconds = unified_gds_views_filtered["second"]
             unified_gds_views_by_seconds = unified_gds_views_filtered.set_index(gds_seconds)
             unified_gds_views_by_seconds.drop(columns="second")
-            #print(unified_gds_views_by_seconds)
+            print("gds unified")
+            print(unified_gds_views_by_seconds)
 
-            diff_df = dataframe_difference(unified_rust_views_by_seconds, unified_gds_views_by_seconds)
+            diff_var_rust = unified_rust_views_by_seconds
+            diff_var_gds = unified_gds_views_by_seconds
+            diff_df = dataframe_difference(diff_var_rust, diff_var_gds)
 
             unified_rust_views_seconds_list.append(unified_rust_views_by_seconds)
             unified_gds_views_seconds_list.append(unified_gds_views_by_seconds)
@@ -176,11 +227,16 @@ def main():
 
     print("happy plotting!")
 
+    #print(unified_rust_views_seconds_list)
+
     average_rust = pd.concat(unified_rust_views_seconds_list).groupby(level=0).mean()
     average_gds = pd.concat(unified_gds_views_seconds_list).groupby(level=0).mean()
     average_diff = pd.concat(diff_df_list).groupby(level=0).mean()
+    print("average rust")
     print(average_rust)
+    print("average gds")
     print(average_gds)
+    print("average diff")
     print(average_diff)
 
     plot_unified_views_df(unified_rust_views, "rust")
