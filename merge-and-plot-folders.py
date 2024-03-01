@@ -104,22 +104,6 @@ def main():
     gds_godot_csv_dict = fill_csv_dicts(gds_godot_dir, gds_godot_csv_dict)
     gds_process_csv_dict = fill_csv_dicts(gds_process_dir, gds_process_csv_dict)
 
-    #for file in os.listdir(rust_godot_dir):
-    #    if file.endswith(".csv"):
-    #        rust_godot_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(rust_godot_dir, file), header=[0], index_col=[0], dtype='int64')
-
-    #for file in os.listdir(rust_process_dir):
-    #    if file.endswith(".csv"):
-    #        rust_process_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(rust_process_dir, file), header=[0], index_col=[0])
-
-    #for file in os.listdir(gds_godot_dir):
-    #    if file.endswith(".csv"):
-    #        gds_godot_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(gds_godot_dir, file), header=[0], index_col=[0], dtype='int64')
-
-    #for file in os.listdir(gds_process_dir):
-    #    if file.endswith(".csv"):
-    #        gds_process_csv_dict[file.replace(".csv", "")] = pd.read_csv(os.path.join(gds_process_dir, file), header=[0], index_col=[0])
-
     #sorting by the filenames which should be given some kind of order (timestamp)
     rust_godot_keys = list(rust_godot_csv_dict.keys())
     rust_godot_keys.sort()
@@ -136,26 +120,6 @@ def main():
     rust_process_csv_dict_ordered = make_ordered_dict(rust_process_keys, rust_process_csv_dict, rust_process_csv_dict_ordered)
     gds_godot_csv_dict_ordered = make_ordered_dict(gds_godot_keys, gds_godot_csv_dict, gds_godot_csv_dict_ordered)
     gds_process_csv_dict_ordered = make_ordered_dict(gds_process_keys, gds_process_csv_dict, gds_process_csv_dict_ordered)
-
-    #for key in rust_godot_keys:
-    #    val = rust_godot_csv_dict[key]
-    #    rust_godot_csv_dict_ordered[key] = val
-    #    del rust_godot_csv_dict[key]
-
-    #for key in rust_process_keys:
-    #    val = rust_process_csv_dict[key]
-    #    rust_process_csv_dict_ordered[key] = val
-    #    del rust_process_csv_dict[key]
-
-    #for key in gds_godot_keys:
-    #    val = gds_godot_csv_dict[key]
-    #    gds_godot_csv_dict_ordered[key] = val
-    #    del gds_godot_csv_dict[key]
-
-    #for key in gds_process_keys:
-    #    val = gds_process_csv_dict[key]
-    #    gds_process_csv_dict_ordered[key] = val
-    #    del gds_process_csv_dict[key]
 
     #debug
     #print(rust_godot_keys)
