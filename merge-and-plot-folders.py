@@ -11,6 +11,7 @@ def unify_views(godot_df, process_df):
     #original idea: create df with all timestamps between min and max in micros
     #join the other two dfs onto that
     #PROBLEM: process crashes due to memory overload
+
     #process_timestamps = process_df.index
     #print(process_timestamps)
     #timestamp_min = process_timestamps.min()
@@ -51,29 +52,6 @@ def plot_unified_views_df(unified_views_df, title):
     unified_views_df.plot(subplots=True, title=title)
     plt.show()
 
-def unify_languages(unified_views_rust_df, unified_views_gds_df):
-    #create new df with seconds column as index
-    #return new df
-    pass
-
-def calculate_language_difference(unified_languages_df):
-    #calculate performance differences between the languages
-    #return some statistics
-    pass
-
-def plot_unified_languages(unified_languages_df):
-    #plot
-    #save plot
-    pass
-
-def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-
-
 def dataframe_difference(df1, df2):
     # Create a mask to identify rows with differences
     # Use these lines, when rows without difference should be ignored
@@ -82,30 +60,6 @@ def dataframe_difference(df1, df2):
     #return abs(df1[mask] - df2[mask])
 
     return abs(df1 - df2)
-
-def difference_tolerance(diff, tolerance):
-    # legacy: use lambda to replace
-    #diff_bool = diff.all().apply(lambda x: True if x < tolerance else False)
-
-    # convert dataframe to bool according to chosen tolerance
-    diff_bool = diff.applymap(num_to_bool)
-    # Optional: remove all rows, that contained empty fields
-    #diff_bool.dropna(inplace=True)
-    return diff_bool
-
-def num_to_bool(value):
-    global tolerance
-
-    if value <= tolerance:
-        return True
-    elif value > tolerance:
-        return False
-    else:
-        return "NaN"
-
-def statistics(bool):
-    pass
-
 
 def main():
     #save paths to folders from script invocation to variables
@@ -120,7 +74,7 @@ def main():
     gds_godot_csv_dict = dict()
     gds_process_csv_dict = dict()
 
-    #ordered dict because the order matters
+    #ordered dicts because the order matters
     rust_godot_csv_dict_ordered = OrderedDict()
     rust_process_csv_dict_ordered = OrderedDict()
     gds_godot_csv_dict_ordered = OrderedDict()
@@ -159,6 +113,7 @@ def main():
     gds_process_keys.sort()
 
     #consuming unordered dicts into the ordered ones
+    #unordered dict items are deleted to free some space
     for key in rust_godot_keys:
         val = rust_godot_csv_dict[key]
         rust_godot_csv_dict_ordered[key] = val
@@ -185,21 +140,21 @@ def main():
     #print(gds_godot_keys)
     #print(gds_process_keys)
 
+    #debug
     #print(rust_godot_csv_dict_ordered)
     #print(rust_process_csv_dict_ordered)
     #print(gds_godot_csv_dict_ordered)
     #print(gds_process_csv_dict_ordered)
 
-    #while True:
-    #    try:
-    #        rust_godot_key, rust_godot_df = rust_godot_csv_dict_ordered.popitem()
-    #    except KeyError:
-    #        print ("dictionary is empty")
-
     #if ONE dictionary is empty while accessed by popitem() the whole rest of try block will be skipped
-    #so this only works as intended, if the folders contain the same amount of files
+    #so this is assuming, that all the folders contain the same amount of files
+    #even if the first dicts have more items than the rest, the block is aborted before the unified lists are affected
+    #this could be changed partially by creating the diff dataframe after the calculation of the averages over the rust / gds dataframes
+    #but using different numbers of runs per language does not seem to serve a scientific purpose
+    count = 0
     while True:
         try:
+            count += 1
             rust_godot_key, rust_godot_df = rust_godot_csv_dict_ordered.popitem()
             rust_process_key, rust_process_df = rust_process_csv_dict_ordered.popitem()
             gds_godot_key, gds_godot_df = gds_godot_csv_dict_ordered.popitem()
@@ -234,31 +189,34 @@ def main():
 
             diff_df_list.append(diff_df)
 
-
         except KeyError:
-            print("csv dictionary is empty")
+            print("In iteration nr "+str(count)+" an empty csv dictionary was found.")
+            print("Arithmetic mean is calculated on " +str(count-1)+" unified csv files per language.")
+            print("Stopping the process of merging csv files and starting to plot.")
             break
 
 
     print("happy plotting!")
 
-    #print(unified_rust_views_seconds_list)
+    #print(unified_rust_views_seconds_list) #debug
 
-    #calculating the average of the lists
-    average_rust = pd.concat(unified_rust_views_seconds_list).groupby(level=0).mean()
-    average_gds = pd.concat(unified_gds_views_seconds_list).groupby(level=0).mean()
-    average_diff = pd.concat(diff_df_list).groupby(level=0).mean()
-    print("average rust")
-    print(average_rust)
-    print("average gds")
-    print(average_gds)
-    print("average diff")
-    print(average_diff)
+    #calculating the arithmetic mean of the lists
+    mean_rust = pd.concat(unified_rust_views_seconds_list).groupby(level=0).mean()
+    mean_gds = pd.concat(unified_gds_views_seconds_list).groupby(level=0).mean()
+    mean_diff = pd.concat(diff_df_list).groupby(level=0).mean()
+
+    #debug
+    #print("average rust")
+    #print(average_rust)
+    #print("average gds")
+    #print(average_gds)
+    #print("average diff")
+    #print(average_diff)
 
     #plot the averages
-    plot_unified_views_df(unified_rust_views, "rust")
-    plot_unified_views_df(unified_gds_views, "godot")
-    plot_unified_views_df(diff_df, "difference rust - gds")
+    plot_unified_views_df(mean_rust, "rust")
+    plot_unified_views_df(mean_gds, "godot")
+    plot_unified_views_df(mean_diff, "difference rust - gds")
 
 
 
