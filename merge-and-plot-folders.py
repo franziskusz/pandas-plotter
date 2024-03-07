@@ -88,6 +88,9 @@ def main():
     gds_process_csv_dict = dict()
 
     #ordered dicts because the order matters
+    #since python 3.7 regular dicts are officialy ordered as well
+    #but for intent signaling and backwards compatibility OrderedDict was chosen here
+    #also this enables the enhanced popitem() method with FIFO option
     rust_godot_csv_dict_ordered = OrderedDict()
     rust_process_csv_dict_ordered = OrderedDict()
     gds_godot_csv_dict_ordered = OrderedDict()
@@ -142,6 +145,8 @@ def main():
     while True:
         try:
             count += 1
+
+            #optional: use popitem(last=False) for First In First Out instead
             rust_godot_key, rust_godot_df = rust_godot_csv_dict_ordered.popitem()
             rust_process_key, rust_process_df = rust_process_csv_dict_ordered.popitem()
             gds_godot_key, gds_godot_df = gds_godot_csv_dict_ordered.popitem()
@@ -152,28 +157,31 @@ def main():
             unified_rust_views = unify_views(rust_godot_df, rust_process_df)
             unified_gds_views = unify_views(gds_godot_df, gds_process_df)
 
+            #delete all rows, where the value in the 'seconds' column is null
             unified_rust_views_filtered = unified_rust_views.dropna(subset=["second"])
             unified_gds_views_filtered = unified_gds_views.dropna(subset=["second"])
 
+            #make seconds column the new index
             rust_seconds = unified_rust_views_filtered["second"]
             unified_rust_views_by_seconds = unified_rust_views_filtered.set_index(rust_seconds)
             unified_rust_views_by_seconds.drop(columns="second")
-            print("rust unified")
-            print(unified_rust_views_by_seconds)
+            #print("rust unified") #debug
+            #print(unified_rust_views_by_seconds)
 
             gds_seconds = unified_gds_views_filtered["second"]
             unified_gds_views_by_seconds = unified_gds_views_filtered.set_index(gds_seconds)
             unified_gds_views_by_seconds.drop(columns="second")
-            print("gds unified")
-            print(unified_gds_views_by_seconds)
+            #print("gds unified") #debug
+            #print(unified_gds_views_by_seconds)
 
+            #calculate the difference between rust and godot
             diff_var_rust = unified_rust_views_by_seconds
             diff_var_gds = unified_gds_views_by_seconds
             diff_df = dataframe_difference(diff_var_rust, diff_var_gds)
 
+            #put the unified rust and godot dataframes and the difference dataframe in their corresponding lists
             unified_rust_views_seconds_list.append(unified_rust_views_by_seconds)
             unified_gds_views_seconds_list.append(unified_gds_views_by_seconds)
-
             diff_df_list.append(diff_df)
 
         except KeyError:
