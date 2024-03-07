@@ -30,6 +30,37 @@ This script is meant to be used to process and plot the data collected by the ab
 2. Go to the root directory.
 3. For an example run: `python merge-and-plot-folders.py data/rust-godot data/rust-process data/gds-godot data/gds-process`
 
+## Plot Examples
+
+The following plots are based on the the results provided in the `data/10s-intervall/` directory.
+
+The test run was done with the following settings:
+- initial wave: `0`
+- mob spawn intervall: `10`
+- mob spawns per second: `2`
+- add weight: `true`
+- calculate n times per mob per frame: `100`
+- bot player: `true`
+- safe mode: `true`
+
+Hardware:
+- MacBook Pro Retina 13 Inch early 2015
+- 2.7 GHz Dual Core Intel Core i5
+- 8 GB 1867 MHz DDR3
+- 128 GB flash drive
+
+OS:
+- macOS 12.4 Monterey
+  
+#### Rust
+![rust](data/10s-intervall/rust.png)
+
+#### GDScript
+![gds](data/10s-intervall/gds.png)
+
+#### Difference
+![rust](data/10s-intervall/diff-rust-gds.png)
+
 ## Notes
 - I am aware of the critical aspects of the pandas library, like [stated by its creator Wes McKinney](https://wesmckinney.com/blog/apache-arrow-pandas-internals/).
   But since I had some experience with it and the amounts of data processed here are not that big it was a choice of convenience.
