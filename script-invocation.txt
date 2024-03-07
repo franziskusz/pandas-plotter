@@ -1,0 +1,7 @@
+current version, for folders:
+python merge-and-plot-folders.py data/rust-godot data/rust-process data/gds-godot data/gds-process
+
+
+
+older version, for single files:
+python merge-and-plot.py data/rust-godot1.csv data/rust-process1.csv data/gds-godot1.csv data/gds-process1.csv
