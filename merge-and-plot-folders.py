@@ -61,8 +61,8 @@ def unify_views(godot_df, process_df):
     return unified_views_df
 
 def plot_unified_views_df(unified_views_df, title):
-    #TODO remove seconds column
-    unified_views_df.plot(subplots=True, title=title)
+    unified_views_df.drop('second', axis=1).plot(subplots=True, title=title)
+    #unified_views_df.plot(subplots=True, title=title)
     plt.show()
 
 def dataframe_difference(df1, df2):
