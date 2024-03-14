@@ -28,7 +28,7 @@ This script is meant to be used to process and plot the data collected by the ab
 (assuming python >3.7 is installed)
 1. Clone this Repository.
 2. Go to the root directory.
-3. For an example run: `python merge-and-plot-folders.py data/rust-godot data/rust-process data/gds-godot data/gds-process`
+3. For an example run: `python merge-and-plot-folders.py data/10s-intervall/rust-godot data/10s-intervall/rust-process data/10s-intervall/gds-godot data/10s-intervall/gds-process`
 
 ## Plot Examples
 
