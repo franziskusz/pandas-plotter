@@ -74,6 +74,18 @@ def dataframe_difference(df1, df2):
 
     return abs(df1 - df2)
 
+#this was supposed to calculate mean over max value of a specific column given as df.max(axis='column_name')
+#instead it returned a list of those values of all columns
+#unexpected but ok and was adjusted to do exactly that
+def max_mean(df_list):
+    max_list = []
+    for df in df_list:
+        max_list.append(df.max())
+    max_mean = sum(max_list) / len(max_list)
+
+    return max_mean
+
+
 def main():
     #save paths to folders from script invocation to variables
     rust_godot_dir = sys.argv[1]
@@ -199,6 +211,16 @@ def main():
     mean_rust = pd.concat(unified_rust_views_seconds_list).groupby(level=0).mean()
     mean_gds = pd.concat(unified_gds_views_seconds_list).groupby(level=0).mean()
     mean_diff = pd.concat(diff_df_list).groupby(level=0).mean()
+
+    #print(unified_rust_views_seconds_list)
+
+    rust_max_mean = max_mean(unified_rust_views_seconds_list)
+    print("rust max value mean\n" + str(rust_max_mean))
+
+    gds_max_mean = max_mean(unified_gds_views_seconds_list)
+    print("gds max value mean\n" + str(gds_max_mean))
+
+
 
     #debug
     #print("average rust")
