@@ -232,22 +232,22 @@ def main():
 
 
     rust_max_mean = max_mean(unified_rust_views_seconds_list)
-    print("rust max value mean\n" + str(rust_max_mean)+"\n")
+    print("rust max value mean\n" + rust_max_mean.to_string()+"\n")
 
     gds_max_mean = max_mean(unified_gds_views_seconds_list)
-    print("gds max value mean\n" + str(gds_max_mean)+"\n")
+    print("gds max value mean\n" + gds_max_mean.to_string()+"\n")
 
     diff_max_mean = max_mean(diff_df_list)
-    diff_max_mean = diff_max_mean.drop(['cpu usage', 'memory usage', 'virtual memory usage', 'second', 'mobs_spawned'])
-    print("diff max value mean\n" + str(diff_max_mean)+"\n")
+    diff_max_mean = diff_max_mean.drop(['memory usage', 'virtual memory usage', 'second', 'mobs_spawned'])
+    print("diff max value mean\n" + diff_max_mean.to_string()+"\n")
 
     diff_mean_mean = mean_mean(diff_df_list)
     diff_mean_mean = diff_mean_mean.drop(['read bytes', 'written bytes', 'second', 'mobs_spawned', 'hits'])
-    print("diff mean value mean\n" + str(diff_mean_mean)+"\n")
+    print("diff mean value mean\n" + diff_mean_mean.to_string()+"\n")
 
     diff_sum_mean = sum_mean(diff_df_list)
     diff_sum_mean = diff_sum_mean.drop(['cpu usage', 'read bytes', 'written bytes', 'second', 'mobs_spawned', 'hits'])
-    print("diff sum mean\n" + str(diff_sum_mean)+"\n")
+    print("diff sum mean\n" + diff_sum_mean.to_string()+"\n")
 
 
 
@@ -260,9 +260,9 @@ def main():
     #print(average_diff)
 
     #plot the averages
-    plot_unified_views_df(mean_rust, "rust")
-    plot_unified_views_df(mean_gds, "godot")
-    plot_unified_views_df(mean_diff, "difference rust - gds")
+    #plot_unified_views_df(mean_rust, "rust")
+    #plot_unified_views_df(mean_gds, "godot")
+    #plot_unified_views_df(mean_diff, "difference rust - gds")
 
 
 
