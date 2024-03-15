@@ -85,6 +85,21 @@ def max_mean(df_list):
 
     return max_mean
 
+def mean_mean(df_list):
+    mean_list = []
+    for df in df_list:
+        mean_list.append(df.mean())
+    mean_mean = sum(mean_list) / len(mean_list)
+
+    return mean_mean
+
+def sum_mean(df_list):
+    sum_list = []
+    for df in df_list:
+        sum_list.append(df.sum())
+    sum_mean = sum(sum_list) / len(sum_list)
+
+    return sum_mean
 
 def main():
     #save paths to folders from script invocation to variables
@@ -203,7 +218,7 @@ def main():
             break
 
 
-    print("happy plotting!")
+    print("happy plotting!\n")
 
     #print(unified_rust_views_seconds_list) #debug
 
@@ -214,11 +229,25 @@ def main():
 
     #print(unified_rust_views_seconds_list)
 
+
+
     rust_max_mean = max_mean(unified_rust_views_seconds_list)
-    print("rust max value mean\n" + str(rust_max_mean))
+    print("rust max value mean\n" + str(rust_max_mean)+"\n")
 
     gds_max_mean = max_mean(unified_gds_views_seconds_list)
-    print("gds max value mean\n" + str(gds_max_mean))
+    print("gds max value mean\n" + str(gds_max_mean)+"\n")
+
+    diff_max_mean = max_mean(diff_df_list)
+    diff_max_mean = diff_max_mean.drop(['cpu usage', 'memory usage', 'virtual memory usage', 'second', 'mobs_spawned'])
+    print("diff max value mean\n" + str(diff_max_mean)+"\n")
+
+    diff_mean_mean = mean_mean(diff_df_list)
+    diff_mean_mean = diff_mean_mean.drop(['read bytes', 'written bytes', 'second', 'mobs_spawned', 'hits'])
+    print("diff mean value mean\n" + str(diff_mean_mean)+"\n")
+
+    diff_sum_mean = sum_mean(diff_df_list)
+    diff_sum_mean = diff_sum_mean.drop(['cpu usage', 'read bytes', 'written bytes', 'second', 'mobs_spawned', 'hits'])
+    print("diff sum mean\n" + str(diff_sum_mean)+"\n")
 
 
 
