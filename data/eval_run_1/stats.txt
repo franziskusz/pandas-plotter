@@ -1,0 +1,39 @@
+rust max value mean
+cpu usage               1.133065e+02
+memory usage            1.503568e+08
+virtual memory usage    3.548464e+10
+read bytes              7.240499e+07
+written bytes           1.515520e+06
+second                  1.176000e+02
+mobs_spawned            1.176000e+03
+hits                    1.001400e+03
+fps                     1.206000e+02
+
+gds max value mean
+cpu usage               1.134057e+02
+memory usage            1.511367e+08
+virtual memory usage    3.548294e+10
+read bytes              4.227072e+06
+written bytes           1.613824e+06
+second                  1.256000e+02
+mobs_spawned            1.256000e+03
+hits                    1.085200e+03
+fps                     1.206000e+02
+
+diff max value mean
+cpu usage        2.009286e+01
+read bytes       6.818038e+07
+written bytes    6.881280e+04
+hits             6.100000e+01
+fps              2.500000e+01
+
+diff mean value mean
+cpu usage               2.754113e+00
+memory usage            5.379086e+06
+virtual memory usage    2.951773e+06
+fps                     8.197508e+00
+
+diff sum mean
+memory usage            609657651.2
+virtual memory usage    333132595.2
+fps                           919.6
