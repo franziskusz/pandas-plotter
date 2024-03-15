@@ -72,7 +72,7 @@ def dataframe_difference(df1, df2):
     # Return the rows with differences
     #return abs(df1[mask] - df2[mask])
 
-    return abs(df1 - df2)
+    return df1 - df2
 
 #this was supposed to calculate mean over max value of a specific column given as df.max(axis='column_name')
 #instead it returned a list of those values of all columns
@@ -260,8 +260,9 @@ def main():
     #print(average_diff)
 
     #plot the averages
-    plot_unified_views_df(mean_rust, "rust")
-    plot_unified_views_df(mean_gds, "godot")
+    #plot_unified_views_df(mean_rust, "rust")
+    #plot_unified_views_df(mean_gds, "godot")
+    mean_diff=mean_diff.drop(columns=['mobs_spawned'])
     plot_unified_views_df(mean_diff, "difference rust - gds")
 
 

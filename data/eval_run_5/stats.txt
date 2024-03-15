@@ -21,19 +21,19 @@ hits                    1.278000e+02
 fps                     1.208000e+02
 
 diff max value mean
-cpu usage            20.402967
-read bytes       563609.600000
-written bytes    958464.000000
-hits                  8.200000
-fps                  30.000000
+cpu usage             2.57653
+read bytes      -143360.00000
+written bytes    467763.20000
+hits                  7.80000
+fps                  30.00000
 
 diff mean value mean
-cpu usage               2.906770e+00
-memory usage            4.969669e+07
-virtual memory usage    4.917350e+08
-fps                     1.256219e+01
+cpu usage              -2.544046e+00
+memory usage           -4.763997e+07
+virtual memory usage   -4.856370e+08
+fps                     1.236370e+01
 
 diff sum mean
-memory usage            3.701312e+09
-virtual memory usage    3.640934e+10
-fps                     9.292000e+02
+memory usage           -3.549114e+09
+virtual memory usage   -3.595810e+10
+fps                     9.148000e+02
