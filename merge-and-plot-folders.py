@@ -260,8 +260,8 @@ def main():
     #print(average_diff)
 
     #plot the averages
-    #plot_unified_views_df(mean_rust, "rust")
-    #plot_unified_views_df(mean_gds, "godot")
+    plot_unified_views_df(mean_rust, "rust")
+    plot_unified_views_df(mean_gds, "godot")
     mean_diff=mean_diff.drop(columns=['mobs_spawned'])
     plot_unified_views_df(mean_diff, "difference rust - gds")
 
