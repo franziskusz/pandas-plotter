@@ -15,31 +15,30 @@ This script is meant to be used to process and plot the data collected by the ab
 3. gds-godot (from [Godot GDScript benchmark game](https://github.com/franziskusz/dodge-gds))
 4. gds-process (from ([process-logger](https://github.com/franziskusz/process-logger) while running the [Godot GDScript benchmark game](https://github.com/franziskusz/dodge-gds))
 
+## Setup
+1. [Install Python >= 3.7](https://www.python.org/downloads/)
+2. Clone this repository by opening a shell and entering:
+   - `git clone git@github.com:franziskusz/pandas-plotter.git` (requires having a ssh key setup)
+   - or `git clone https://github.com/franziskusz/pandas-plotter.git` 
+3. Change to the just cloned repository directory with `cd pandas-plotter` (Unix)
+4. For an example run: `python merge-and-plot-folders.py data/eval_run_1/rust-godot data/eval_run_1/rust-process data/eval_run_1/gds-godot data/eval_run_1/gds-process`
+
 ### IMPORTANT
 - It should not matter how many test runs are done before running this script, BUT:
 - Since a arthimetic mean is calculated on the contents of each folder, results only make sense, if all test runs are done with the same settings in the benchmark applications.
 - Also all folders should contain the same amount of files and only the files corresponding to each other. This scripts sorts the files by their name and assigns them to each other by their sorted position. Conveniently the benchmark applications as well as the process-logger name their .csv result files with a timestamp. So this script knows `rust-godot-[smaller-number]` belongs to `rust-process-[smaller-number]` while `rust-godot-[bigger-number]` belongs to `rust-process-[bigger-number]` while the exact timestamps do not have to match.
 - The processing begins with the `file-names-[biggest-number]` and stops as soon as one of the four folders does not contain any more files. All further files will be ignored. 
 
-
-
-
-## How to use this
-(assuming python >3.7 is installed)
-1. Clone this Repository.
-2. Go to the root directory.
-3. For an example run: `python merge-and-plot-folders.py data/10s-intervall/rust-godot data/10s-intervall/rust-process data/10s-intervall/gds-godot data/10s-intervall/gds-process`
-
 ## Plot Examples
 
-The following plots are based on the the results provided in the `data/10s-intervall/` directory.
+The following plots are based on the the results provided in the `data/eval_run_1/` directory.
 
 The test run was done with the following settings:
 - initial wave: `0`
-- mob spawn intervall: `10`
-- mob spawns per second: `2`
-- add weight: `true`
-- calculate n times per mob per frame: `100`
+- mob spawn intervall: `1`
+- mob spawns per second: `10`
+- add calculations: `false`
+- calculate n times per mob per frame: `-`
 - bot player: `true`
 - safe mode: `true`
 
@@ -53,13 +52,13 @@ OS:
 - macOS 12.4 Monterey
   
 #### Rust
-![rust](data/10s-intervall/rust.png)
+![rust](data/eval_run_1/rust_mean.png)
 
 #### GDScript
-![gds](data/10s-intervall/gds.png)
+![gds](data/eval_run_1/gds_mean.png)
 
 #### Difference
-![rust](data/10s-intervall/diff-rust-gds.png)
+![rust](data/eval_run_1/diff_rust-gds_mean.png)
 
 ## Notes
 - I am aware of the critical aspects of the pandas library, like [stated by its creator Wes McKinney](https://wesmckinney.com/blog/apache-arrow-pandas-internals/).
