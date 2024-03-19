@@ -2,8 +2,9 @@
 
 This is part of a project to evaluate the godot-rust bindings [gdext](https://github.com/godot-rust/gdext).
 
-The evaluation project consists of four Repositories:
+The evaluation project consists of five Repositories:
 
+- [overview repository](https://github.com/franziskusz/gdext-evaluation)
 - [this](https://github.com/franziskusz/pandas-plotter)
 - [Godot Rust benchmark game](https://github.com/franziskusz/dodge-r)
 - [Godot GDScript benchmark game](https://github.com/franziskusz/dodge-gds)
